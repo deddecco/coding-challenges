@@ -1,3 +1,5 @@
+package personal.y22.m08;
+
 public class DigitCounter {
     public static int countDigits(int[] nums) {
         int[] countOfDigits = new int[nums.length];
