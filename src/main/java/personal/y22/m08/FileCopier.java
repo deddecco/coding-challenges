@@ -58,6 +58,8 @@ public class FileCopier {
             if (Objects.equals(args[1], "-c")) {
                 if (Objects.equals(args[2], "-n")) {
                     makeFirstLetterCapitalWithLineNums(args);
+                } else {
+                    warnUserAboutBadOperation();
                 }
             }
         }
