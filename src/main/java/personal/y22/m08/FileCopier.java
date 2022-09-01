@@ -1,35 +1,83 @@
 package personal.y22.m08;
 
 import java.io.*;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileCopier {
     public static void main(String[] args) throws IOException {
-        warnUserAboutBadOperation(args);
-        // same case, no nums
-        makeCopyWithoutLineNums(args);
-        // same case, nums
-        makeCopyWithLineNums(args);
-        // lowercase, no nums
-        makeCopyAllLowerCase(args);
-        // uppercase, no nums
-        makeCopyAllUpperCase(args);
-        // upper case, nums
-        makeCopyAllUpperCaseLineNums(args);
-        // lowercase, nums
-        makeCopyAllLowerCaseLineNums(args);
-    }
+        boolean argsLengthOK = (args.length <= 5 && args.length >= 3);
+        if (!argsLengthOK || !args[0].equals("copy")) {
+            warnUserAboutBadOperation();
+        }
+        if (args.length == 3) {
+            makeCopyWithoutLineNums(args);
+        }
 
-    // displays error message if first command is not copy
-    // other, more particular error messages
-    // are given in each set of 4 methods that define each operation
-    private static void warnUserAboutBadOperation(String[] args) {
-        if (!(args[0].equals("copy"))) {
-            System.out.println("Cannot perform operation");
-            System.exit(-1);
+        if (args.length == 4) {
+            if (Objects.equals(args[1], "-n")) {
+                makeCopyWithLineNums(args);
+            } else if (Objects.equals(args[1], "-l")) {
+                makeCopyAllLowerCase(args);
+            } else if (Objects.equals(args[1], "-u")) {
+                makeCopyAllUpperCase(args);
+            } else if (Objects.equals(args[1], "-c")) {
+                makeFirstLetterCapital(args);
+            } else {
+                warnUserAboutBadOperation();
+            }
+        }
+        if (args.length == 5) {
+            if (Objects.equals(args[1], "-n")) {
+                if (Objects.equals(args[2], "-l")) {
+                    makeCopyAllLowerCaseLineNums(args);
+                } else if (Objects.equals(args[2], "-u")) {
+                    makeCopyAllUpperCaseLineNums(args);
+                } else if (Objects.equals(args[2], "-c")) {
+                    makeFirstLetterCapitalWithLineNums(args);
+                } else {
+                    warnUserAboutBadOperation();
+                }
+            }
+
+            if (Objects.equals(args[1], "-l")) {
+                if (Objects.equals(args[2], "-n")) {
+                    makeCopyAllLowerCaseLineNums(args);
+                } else {
+                    warnUserAboutBadOperation();
+                }
+            }
+            if (Objects.equals(args[1], "-u")) {
+                if (Objects.equals(args[2], "-n")) {
+                    makeCopyAllUpperCaseLineNums(args);
+                } else {
+                    warnUserAboutBadOperation();
+                }
+            }
+            if (Objects.equals(args[1], "-c")) {
+                if (Objects.equals(args[2], "-n")) {
+                    makeFirstLetterCapitalWithLineNums(args);
+                }
+            }
         }
     }
 
-    // copying without line numbers
+    private static void warnUserAboutBadOperation() {
+        System.out.println("To copy one file to another: copy file1 file2");
+        System.out.println("To copy one file to another in all uppercase: copy -u file1 file2");
+        System.out.println("To copy one file to another in all lowercase: copy -l file1 file2");
+        System.out.println("To copy one file to another with line numbers: copy -n file1 file2");
+        System.out.println("To copy one file to another capitalizing the first letter of the line: copy -c file1 file2");
+        System.out.println("To copy one file to another in all uppercase with line numbers: copy -u -n file1 file2");
+        System.out.println("To copy one file to another in all uppercase with line numbers: copy -n -u file1 file2");
+        System.out.println("To copy one file to another in all lowercase with line numbers: copy -l -n file1 file2");
+        System.out.println("To copy one file to another in all lowercase with line numbers: copy -n -l file1 file2");
+        System.out.println("To copy one file to another capitalizing the first letter of the line and adding line numbers: copy -n -c file1 file2");
+        System.out.println("To copy one file to another capitalizing the first letter of the line and adding line numbers: copy -c -n file1 file2");
+        System.exit(-1);
+    }
+
     private static void copyWithoutLineNums(BufferedReader reader, FileWriter writer) throws IOException {
         String currentLine;
         while ((currentLine = reader.readLine()) != null) {
@@ -37,31 +85,19 @@ public class FileCopier {
             writer.write("\n");
         }
     }
+
     private static void makeCopyWithoutLineNums(String[] args) throws IOException {
         FileWriter writer;
         // if args has 3 elements, they will be [copy instruction, source file, destination file]
-        if (args.length == 3) {
-            File source = getSourceFileWithoutLineNums(args);
-            BufferedReader reader = new BufferedReader(new FileReader(source));
-            File destination = getDestFileWithoutLineNums(args);
-            writer = new FileWriter(destination);
-            copyWithoutLineNums(reader, writer);
-            writer.close();
-        } else {
-            System.out.println("Please ensure you have provided 3 arguments in the following order: ");
-            System.out.println("first: copy");
-            System.out.println("second: the absolute path of the file to be copied");
-            System.out.println("third: the absolute path of the file into which the copy of the first should be written");
-        }
-    }
-    private static File getSourceFileWithoutLineNums(String[] args) {
-        return new File(args[1]);
-    }
-    private static File getDestFileWithoutLineNums(String[] args) {
-        return new File(args[2]);
+
+        File source = getSourceFile(args);
+        BufferedReader reader = new BufferedReader(new FileReader(source));
+        File destination = getDestFile(args);
+        writer = new FileWriter(destination);
+        copyWithoutLineNums(reader, writer);
+        writer.close();
     }
 
-    // copying with line numbers
     private static void copyWithLineNums(BufferedReader reader, FileWriter writer) throws IOException {
         String currentLine;
         int i = 1;
@@ -71,32 +107,17 @@ public class FileCopier {
             i++;
         }
     }
+
     private static void makeCopyWithLineNums(String[] args) throws IOException {
         FileWriter writer;
-        // if args has 4 elements, they will be [copy instruction, line number instruction, source file, destination file]
-        if (args.length == 4 && "-n".equals(args[1]) && new File(args[2]).equals(getSourceFileWithLineNums(args))) {
-            File source = getSourceFileWithLineNums(args);
-            BufferedReader reader = new BufferedReader(new FileReader(source));
-            File destination = getDestFileWithLineNums(args);
-            writer = new FileWriter(destination);
-            copyWithLineNums(reader, writer);
-            writer.close();
-        } else {
-            System.out.println("Please ensure you have provided 4 arguments in the following order: ");
-            System.out.println("first: copy");
-            System.out.println("second: -n");
-            System.out.println("third: the absolute path of the file to be copied");
-            System.out.println("fourth: the absolute path of the file into which the copy of the first should be written");
-        }
-    }
-    private static File getSourceFileWithLineNums(String[] args) {
-        return new File(args[2]);
-    }
-    private static File getDestFileWithLineNums(String[] args) {
-        return new File(args[3]);
+        File source = getSourceFile(args);
+        BufferedReader reader = new BufferedReader(new FileReader(source));
+        File destination = getDestFile(args);
+        writer = new FileWriter(destination);
+        copyWithLineNums(reader, writer);
+        writer.close();
     }
 
-    // copying with all uppercase
     private static void copyWithAllUpperCase(BufferedReader reader, FileWriter writer) throws IOException {
         String currentLine;
         while ((currentLine = reader.readLine()) != null) {
@@ -104,31 +125,18 @@ public class FileCopier {
             writer.write("\n");
         }
     }
+
     private static void makeCopyAllUpperCase(String[] args) throws IOException {
         FileWriter writer;
-        if (args.length == 4 && "-u".equals(args[1]) && new File(args[2]).equals(getSourceFileWithAllUpperCase(args))) {
-            File source = getSourceFileWithAllUpperCase(args);
-            BufferedReader reader = new BufferedReader(new FileReader(source));
-            File destination = getDestFileWithAllUpperCase(args);
-            writer = new FileWriter(destination);
-            copyWithAllUpperCase(reader, writer);
-            writer.close();
-        } else {
-            System.out.println("Please ensure you have provided 4 arguments in the following order: ");
-            System.out.println("first: copy");
-            System.out.println("second: -u");
-            System.out.println("third: the absolute path of the file to be copied");
-            System.out.println("fourth: the absolute path of the file into which the copy of the first should be written");
-        }
-    }
-    private static File getSourceFileWithAllUpperCase(String[] args) {
-        return new File(args[2]);
-    }
-    private static File getDestFileWithAllUpperCase(String[] args) {
-        return new File(args[3]);
+
+        File source = getSourceFile(args);
+        BufferedReader reader = new BufferedReader(new FileReader(source));
+        File destination = getDestFile(args);
+        writer = new FileWriter(destination);
+        copyWithAllUpperCase(reader, writer);
+        writer.close();
     }
 
-    // copying with all lowercase
     private static void copyWithAllLowerCase(BufferedReader reader, FileWriter writer) throws IOException {
         String currentLine;
         while ((currentLine = reader.readLine()) != null) {
@@ -136,31 +144,17 @@ public class FileCopier {
             writer.write("\n");
         }
     }
+
     private static void makeCopyAllLowerCase(String[] args) throws IOException {
         FileWriter writer;
-        if (args.length == 4 && "-l".equals(args[1]) && new File(args[2]).equals(getSourceFileWithAllLowerCase(args))) {
-            File source = getSourceFileWithAllLowerCase(args);
-            BufferedReader reader = new BufferedReader(new FileReader(source));
-            File destination = getDestFileWithAllLowerCase(args);
-            writer = new FileWriter(destination);
-            copyWithAllLowerCase(reader, writer);
-            writer.close();
-        } else {
-            System.out.println("Please ensure you have provided 4 arguments in the following order: ");
-            System.out.println("first: copy");
-            System.out.println("second: -l");
-            System.out.println("third: the absolute path of the file to be copied");
-            System.out.println("fourth: the absolute path of the file into which the copy of the first should be written");
-        }
-    }
-    private static File getSourceFileWithAllLowerCase(String[] args) {
-        return new File(args[2]);
-    }
-    private static File getDestFileWithAllLowerCase(String[] args) {
-        return new File(args[3]);
+        File source = getSourceFile(args);
+        BufferedReader reader = new BufferedReader(new FileReader(source));
+        File destination = getDestFile(args);
+        writer = new FileWriter(destination);
+        copyWithAllLowerCase(reader, writer);
+        writer.close();
     }
 
-    // copy with line numbers in uppercase
     private static void copyWithLineNumbersUpperCase(BufferedReader reader, FileWriter writer) throws IOException {
         String currentLine;
         int i = 1;
@@ -169,32 +163,17 @@ public class FileCopier {
             writer.write("\n");
         }
     }
+
     private static void makeCopyAllUpperCaseLineNums(String[] args) throws IOException {
         FileWriter writer;
-        if (args.length == 5 && (("-u".equals(args[1]) && "-n".equals(args[2])) || ("-n".equals(args[1]) && "-u".equals(args[2]))) && new File(args[3]).equals(getSourceFileWithAllUpperCaseLineNums(args))) {
-            File source = getSourceFileWithAllUpperCaseLineNums(args);
-            BufferedReader reader = new BufferedReader(new FileReader(source));
-            File destination = getDestFileWithAllUpperCaseLineNums(args);
-            writer = new FileWriter(destination);
-            copyWithLineNumbersUpperCase(reader, writer);
-            writer.close();
-        } else {
-            System.out.println("Please ensure you have provided 5 arguments in the following order: ");
-            System.out.println("first: copy");
-            System.out.println("second: -n or -u");
-            System.out.println("third: which ever option, -n or -u, you did not place in the second slot");
-            System.out.println("fourth: the absolute path of the file to be copied");
-            System.out.println("fifth: the absolute path of the file into which the copy of the first should be written");
-        }
-    }
-    private static File getSourceFileWithAllUpperCaseLineNums(String[] args) {
-        return new File(args[3]);
-    }
-    private static File getDestFileWithAllUpperCaseLineNums(String[] args) {
-        return new File(args[4]);
+        File source = getSourceFile(args);
+        BufferedReader reader = new BufferedReader(new FileReader(source));
+        File destination = getDestFile(args);
+        writer = new FileWriter(destination);
+        copyWithLineNumbersUpperCase(reader, writer);
+        writer.close();
     }
 
-    // copy with line numbers in lowercase
     private static void copyWithLineNumbersLowerCase(BufferedReader reader, FileWriter writer) throws IOException {
         String currentLine;
         int i = 1;
@@ -203,28 +182,76 @@ public class FileCopier {
             writer.write("\n");
         }
     }
+
     private static void makeCopyAllLowerCaseLineNums(String[] args) throws IOException {
         FileWriter writer;
-        if (args.length == 5 && (("-l".equals(args[1]) && "-n".equals(args[2])) || ("-n".equals(args[1]) && "-l".equals(args[2]))) && new File(args[3]).equals(getSourceFileWithAllLowerCaseLineNums(args))) {
-            File source = getSourceFileWithAllLowerCaseLineNums(args);
-            BufferedReader reader = new BufferedReader(new FileReader(source));
-            File destination = getDestFileWithAllLowerCaseLineNums(args);
-            writer = new FileWriter(destination);
-            copyWithLineNumbersLowerCase(reader, writer);
-            writer.close();
-        } else {
-            System.out.println("Please ensure you have provided 5 arguments in the following order: ");
-            System.out.println("first: copy");
-            System.out.println("second: -n or -l");
-            System.out.println("third: which ever option, -n or -l, you did not place in the second slot");
-            System.out.println("fourth: the absolute path of the file to be copied");
-            System.out.println("fifth: the absolute path of the file into which the copy of the first should be written");
+        File source = getSourceFile(args);
+        BufferedReader reader = new BufferedReader(new FileReader(source));
+        File destination = getDestFile(args);
+        writer = new FileWriter(destination);
+        copyWithLineNumbersLowerCase(reader, writer);
+        writer.close();
+    }
+
+    private static final Pattern FIRST_LETTER = Pattern.compile("([a-zA-Z])");
+
+    private static void capitalizeFirstLetterOfLine(BufferedReader reader, FileWriter writer) throws IOException {
+        String currLine;
+        while ((currLine = reader.readLine()) != null) {
+            Matcher matcher = FIRST_LETTER.matcher(currLine);
+            String modLine = matcher.replaceFirst(matchResult -> matchResult.group(1).toUpperCase());
+            writer.write(modLine);
+            writer.write("\n");
         }
     }
-    private static File getSourceFileWithAllLowerCaseLineNums(String[] args) {
-        return new File(args[3]);
+
+    private static void makeFirstLetterCapital(String[] args) throws IOException {
+        FileWriter writer;
+        if (new File(args[2]).equals(getSourceFile(args))) {
+            File source = getSourceFile(args);
+            BufferedReader reader = new BufferedReader(new FileReader(source));
+            File destination = getDestFile(args);
+            writer = new FileWriter(destination);
+            capitalizeFirstLetterOfLine(reader, writer);
+            writer.close();
+        }
     }
-    private static File getDestFileWithAllLowerCaseLineNums(String[] args) {
-        return new File(args[4]);
+
+    private static File getSourceFile(String[] args) {
+        if (new File(args[args.length - 2]).exists()) {
+            return new File(args[args.length - 2]);
+        } else {
+            System.out.println("The file " + args[args.length - 2] + " does not exist");
+            warnUserAboutBadOperation();
+            return null;
+        }
+    }
+
+    private static File getDestFile(String[] args) {
+        return new File(args[args.length - 1]);
+    }
+
+    private static void capitalizeFirstLetterOfLineWithLineNums(BufferedReader reader, FileWriter writer) throws IOException {
+        String currLine;
+        int i = 1;
+        while ((currLine = reader.readLine()) != null) {
+            Matcher matcher = FIRST_LETTER.matcher(currLine);
+            String modLine = matcher.replaceFirst(matchResult -> matchResult.group(1).toUpperCase());
+            writer.write("Line " + i + ": " + modLine);
+            writer.write("\n");
+            i++;
+        }
+    }
+
+    private static void makeFirstLetterCapitalWithLineNums(String[] args) throws IOException {
+        FileWriter writer;
+        if (new File(args[3]).equals(getSourceFile(args))) {
+            File source = getSourceFile(args);
+            BufferedReader reader = new BufferedReader(new FileReader(source));
+            File destination = getDestFile(args);
+            writer = new FileWriter(destination);
+            capitalizeFirstLetterOfLineWithLineNums(reader, writer);
+            writer.close();
+        }
     }
 }
