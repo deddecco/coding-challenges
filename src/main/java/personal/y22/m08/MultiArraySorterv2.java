@@ -1,9 +1,7 @@
 package personal.y22.m08;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
-import static java.util.Arrays.*;
+import static java.util.Arrays.deepToString;
+import static java.util.Arrays.sort;
 import static java.util.Comparator.comparing;
 
 public class MultiArraySorterv2 {

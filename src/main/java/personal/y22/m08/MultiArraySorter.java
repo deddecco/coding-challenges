@@ -7,7 +7,7 @@ public class MultiArraySorter {
         // arrayOfRecords contains records
         // record = array of 4 strings in same order every time (sequence is always second)
         // rearrange the order of the records so the sequences are sorted
-        Comparator<? super String[]> cr = (o1, o2) -> o1[1].compareTo(o2[1]);
+        Comparator<? super String[]> cr = Comparator.comparing(o -> o[1]);
         Arrays.sort(arrayOfRecords, cr);
     }
 

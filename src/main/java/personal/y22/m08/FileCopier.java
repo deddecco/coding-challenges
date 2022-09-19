@@ -24,6 +24,10 @@ public class FileCopier {
                 makeCopyAllUpperCase(args);
             } else if (Objects.equals(args[1], "-c")) {
                 makeFirstLetterCapital(args);
+            } else if (Objects.equals(args[1], "-t")) {
+                makeCopyTruncate64(args);
+            } else if (Objects.equals(args[1], "-s")) {
+                makeCopyReplaceSpace(args);
             } else {
                 warnUserAboutBadOperation();
             }
@@ -117,6 +121,52 @@ public class FileCopier {
         File destination = getDestFile(args);
         writer = new FileWriter(destination);
         copyWithLineNums(reader, writer);
+        writer.close();
+    }
+
+    private static void truncateTo64(BufferedReader reader, FileWriter writer) throws IOException {
+        String currentLine;
+
+        while ((currentLine = reader.readLine()) != null) {
+            writer.write(currentLine.substring(0, 64));
+            writer.write("\n");
+        }
+    }
+
+    public static void makeCopyTruncate64(String[] args) throws IOException {
+        FileWriter writer;
+        File source = getSourceFile(args);
+        BufferedReader reader = new BufferedReader(new FileReader(source));
+        File destination = getDestFile(args);
+        writer = new FileWriter(destination);
+        truncateTo64(reader, writer);
+        writer.close();
+    }
+
+    public static void replaceSpaceUnderscore(BufferedReader reader, FileWriter writer) throws IOException {
+        String currentLine;
+
+        while ((currentLine = reader.readLine()) != null) {
+            StringBuilder adjustedLine = new StringBuilder();
+            for (int i = 0; i < currentLine.length(); i++) {
+                if (currentLine.charAt(i) != ' ') {
+                    adjustedLine.append(currentLine.charAt(i));
+                } else {
+                    adjustedLine.append("_");
+                }
+            }
+            writer.write(adjustedLine.toString());
+            writer.write("\n");
+        }
+    }
+
+    public static void makeCopyReplaceSpace(String[] args) throws IOException {
+        FileWriter writer;
+        File source = getSourceFile(args);
+        BufferedReader reader = new BufferedReader(new FileReader(source));
+        File destination = getDestFile(args);
+        writer = new FileWriter(destination);
+        replaceSpaceUnderscore(reader, writer);
         writer.close();
     }
 

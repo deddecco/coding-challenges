@@ -76,4 +76,27 @@ public class MatrixTools {
     public static boolean vectorsAreLinearlyDependent(int[] vector1, int[] vector2) {
         return !vectorsAreLinearlyIndependent(vector1, vector2);
     }
+
+    public static double[][] multiplyMatrices(double[][] matrix1, double[][] matrix2) {
+        double[][] result = new double[matrix1.length][matrix2[0].length];
+
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[0].length; j++) {
+                result[i][j] = multiplySingleCells(matrix1, matrix2, i, j);
+            }
+        }
+
+        return result;
+    }
+
+    public static double multiplySingleCells(double[][] matrix1, double[][] matrix2, int rowIdx, int colIdx) {
+        double currCell = 0;
+        int i = 0;
+        while (i < matrix2.length) {
+            currCell += matrix1[rowIdx][i] * matrix2[i][colIdx];
+            i++;
+        }
+        return currCell;
+
+    }
 }
