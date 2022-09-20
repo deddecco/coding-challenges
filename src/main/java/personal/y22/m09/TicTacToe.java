@@ -66,8 +66,10 @@ public class TicTacToe {
         // or if the right-to-left diagonal is the same
         // as long as the winning character is not 0000 in the ASCII table
 
-        boolean leftDiagWin = (board[0][0] == 'X' || board[0][0] == 'O') && (board[1][1] == board[0][0]) && (board[1][1] == board[2][2]);
-        boolean rightDiagWin = (board[0][2] == 'X' || board[0][2] == 'O') && (board[1][1] == board[0][2]) && (board[1][1] == board[2][0]);
+        boolean leftDiagWin = (board[0][0] == 'X' || board[0][0] == 'O') && (board[1][1] == board[0][0])
+                && (board[1][1] == board[2][2]);
+        boolean rightDiagWin = (board[0][2] == 'X' || board[0][2] == 'O') && (board[1][1] == board[0][2])
+                && (board[1][1] == board[2][0]);
         // use XOR operator ^
         // cannot win by both diagonals in same game-- either win by right or by left
         diagWin = (leftDiagWin ^ rightDiagWin);
