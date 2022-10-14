@@ -12,7 +12,7 @@ public class Table {
 
     public String[] getHeadings() {
         String[] headingsCopy = new String[headings.length];
-        System.arraycopy(headings, 0, headingsCopy, 0, headings.length);
+        System.arraycopy(headings, 0, headingsCopy, 0, headingsCopy.length);
         return headingsCopy;
     }
 
@@ -39,9 +39,6 @@ public class Table {
 
     // look for corresponding String[] containing data for given id
     public String[] getRecord(String id) {
-        if (id == null) {
-            return null;
-        }
         for (int i = 0; i < numRecords; i++) {
             if (data[i][0].equals(id)) {
                 return data[i];
@@ -105,7 +102,6 @@ public class Table {
         }
         return -1;
     }
-
 
     // identifies the location of a given column
     // name within the header by its index
@@ -185,7 +181,28 @@ public class Table {
         return matches;
     }
 
-    public String[][] sortRecords(String columnToSortBy) {
+
+
+
+    // returns a list containing all records
+    // in the table that called the method
+    public List<String[]> findAll() {
+        // List to store records
+        List<String[]> matches = new ArrayList<>();
+
+        // add all records to list
+        for (int i = 0; i < numRecords; i++) {
+            matches.add(data[i]);
+        }
+
+        // return list
+        return matches;
+    }
+
+
+    // given a column by which the sort should be conducted,
+    // call Arrays.sort() on the 2d array containing the data
+    public void sortRecords(String columnToSortBy) {
 
         int columnToSortThrough = whereIsColumn(columnToSortBy);
         Comparator<String[]> comparator = Comparator.comparing(o -> o[columnToSortThrough]);
@@ -194,7 +211,6 @@ public class Table {
         System.arraycopy(data, 0, datacopy, 0, numRecords);
 
         Arrays.sort(datacopy, comparator);
-
-        return datacopy;
     }
+
 }

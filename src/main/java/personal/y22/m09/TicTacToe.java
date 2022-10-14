@@ -30,6 +30,7 @@ public class TicTacToe {
 
 
     // x moves first, third, fifth, etc.-- when move counts are odd
+    // if this is false this is the second, fourth, sixth, etc. move-- when it is o's turn
     public static boolean isXTurn() {
         return numMoves % 2 == 0;
     }
@@ -39,7 +40,7 @@ public class TicTacToe {
     // (horizontal, vertical, diagonal) spaces on the board
     // that winner is x if any of the 3 adjacent characters that triggerred the win was an x
     // that winner is o if any of the 3 adjacent characters that triggerred the win was an o
-    public static void declareWinner() {
+    public static char declareWinner() {
         boolean rowWin;
         boolean colWin;
         boolean diagWin;
@@ -54,11 +55,18 @@ public class TicTacToe {
                 gameCanContinue = false;
                 System.out.println("Win by row!");
                 // end the program when the game ends after informing the players of the result
-                return;
+                if (board[i][0] == 'X') {
+                    return 'X';
+                }
+                return 'O';
             } else if (colWin) {
                 gameCanContinue = false;
                 System.out.println("Win by column!");
-                return;
+                // end the program when the game ends after informing the players of the result
+                if (board[0][i] == 'X') {
+                    return 'X';
+                }
+                return 'O';
             }
         }
 
@@ -66,10 +74,8 @@ public class TicTacToe {
         // or if the right-to-left diagonal is the same
         // as long as the winning character is not 0000 in the ASCII table
 
-        boolean leftDiagWin = (board[0][0] == 'X' || board[0][0] == 'O') && (board[1][1] == board[0][0])
-                && (board[1][1] == board[2][2]);
-        boolean rightDiagWin = (board[0][2] == 'X' || board[0][2] == 'O') && (board[1][1] == board[0][2])
-                && (board[1][1] == board[2][0]);
+        boolean leftDiagWin = (board[0][0] == 'X' || board[0][0] == 'O') && (board[1][1] == board[0][0]) && (board[1][1] == board[2][2]);
+        boolean rightDiagWin = (board[0][2] == 'X' || board[0][2] == 'O') && (board[1][1] == board[0][2]) && (board[1][1] == board[2][0]);
         // use XOR operator ^
         // cannot win by both diagonals in same game-- either win by right or by left
         diagWin = (leftDiagWin ^ rightDiagWin);
@@ -79,18 +85,21 @@ public class TicTacToe {
             System.out.println("Win by diagonal!");
             if (((board[0][0] == board[1][1]) || (board[0][2] == board[1][1])) && (board[1][1] == 'X')) {
                 System.out.println("X wins!");
+                return 'X';
             } else {
                 System.out.println("O wins!");
+                return 'O';
             }
-            return;
         }
 
         // if the game ends and no one has won, then there has been a draw
         if (isBoardFull()) {
             gameCanContinue = false;
             System.out.println("Draw! No one wins!");
+            return 'D';
         }
         gameCanContinue = true;
+        return 0;
     }
 
     // a move is legal if it doesn't overwrite a previous move,
@@ -100,15 +109,9 @@ public class TicTacToe {
     }
 
     public static boolean isBoardFull() {
-        boolean row1full = (board[0][0] == 'X' || board[0][0] == 'O')
-                && (board[0][1] == 'X' || board[0][1] == 'O')
-                && (board[0][2] == 'X' || board[0][2] == 'O');
-        boolean row2full = (board[1][0] == 'X' || board[1][0] == 'O')
-                && (board[1][1] == 'X' || board[1][1] == 'O')
-                && (board[1][2] == 'X' || board[1][2] == 'O');
-        boolean row3full = (board[2][0] == 'X' || board[2][0] == 'O')
-                && (board[2][1] == 'X' || board[2][1] == 'O')
-                && (board[2][2] == 'X' || board[2][2] == 'O');
+        boolean row1full = (board[0][0] == 'X' || board[0][0] == 'O') && (board[0][1] == 'X' || board[0][1] == 'O') && (board[0][2] == 'X' || board[0][2] == 'O');
+        boolean row2full = (board[1][0] == 'X' || board[1][0] == 'O') && (board[1][1] == 'X' || board[1][1] == 'O') && (board[1][2] == 'X' || board[1][2] == 'O');
+        boolean row3full = (board[2][0] == 'X' || board[2][0] == 'O') && (board[2][1] == 'X' || board[2][1] == 'O') && (board[2][2] == 'X' || board[2][2] == 'O');
 
         return row1full && row2full && row3full;
     }
@@ -128,7 +131,6 @@ public class TicTacToe {
     }
 
     private static void playGame() {
-
         while (gameCanContinue) {
             if (isXTurn()) {
                 executeTurn('X');
@@ -156,7 +158,54 @@ public class TicTacToe {
         }
     }
 
+    // ask the player if they want to play again
+    // if the answer is yes, reset the board
+    public static boolean wantToPlayAgain() {
+        Scanner input = new Scanner(System.in);
+        System.out.println("Do you want to play again?");
+        String doYouWantToPlayAgain = input.nextLine();
+        return doYouWantToPlayAgain.equalsIgnoreCase("yes");
+    }
+
+    // reset the board to all nulls
+    private static void resetBoard() {
+        board[0] = new char[]{'\u0000', '\u0000', '\u0000'};
+        board[1] = new char[]{'\u0000', '\u0000', '\u0000'};
+        board[2] = new char[]{'\u0000', '\u0000', '\u0000'};
+    }
+
     public static void main(String[] args) {
-        playGame();
+
+        // store how many wins X has
+        // before any games played, win total is 0
+        int xWinCount = 0;
+        // store how many wins O has
+        // before any games played, win total is 0
+        int oWinCount = 0;
+        // store how many draws
+        // before any games played, draw total is 0
+        int drawCount = 0;
+
+        boolean playAgain;
+        do {
+            // play once, for sure
+            playGame();
+            // if X won, give X credit
+            if (declareWinner() == 'X') {
+                xWinCount++;
+            }// if O won, give O credit
+            if (declareWinner() == 'O') {
+                oWinCount++;
+            }// if result is a draw, credit draw
+            if (declareWinner() == 'D') {
+                drawCount++;
+            }// print out win-loss-draw record
+            String wldRecord = xWinCount + " wins for X, " + oWinCount + " wins for O, and " + drawCount + " draws so far";
+            System.out.println(wldRecord);
+            // check whether to play again
+            playAgain = wantToPlayAgain();
+            // clear the board
+            resetBoard();
+        } while (playAgain);
     }
 }
