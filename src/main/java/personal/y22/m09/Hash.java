@@ -1,16 +1,17 @@
 package personal.y22.m09;
 
 import java.io.*;
-import java.util.Comparator;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 import static java.util.Collections.reverse;
 import static java.util.Comparator.comparingInt;
 import static personal.y22.m09.LinkedList.Element;
 
 public class Hash {
-     private static LinkedList[] hashes = new LinkedList[40000];
+     private final LinkedList[] hashes = new LinkedList[40000];
+     private static final List<String> ignoreList = new java.util.LinkedList<>();
 
      // each element contains two strings: a key and a value
      // we hash based on the key
@@ -29,48 +30,44 @@ public class Hash {
           charSum %= 40009;
 
           return charSum;
-
      }
-
 
      // add Element to hash
      // if the linked list at the index = result of the hash function
      // does not exist, create it
+     public void put(Element element) {
+          int index = calculateHash(element);
 
-     public static void put(Element element) {
-          int index;
-
-          index = calculateHash(element);
-          if (hashes[index] == null) {
-               hashes[index] = new LinkedList();
-               hashes[index].put(element);
+          if (this.hashes[index] == null) {
+               this.hashes[index] = new LinkedList();
+               this.hashes[index].put(element);
           } else {
-               Element found = hashes[index].getByKey(element.key);
+               Element found = this.hashes[index].getByKey(element.key);
                if (found == null) {
-                    hashes[index].put(element);
+                    this.hashes[index].put(element);
                } else {
                     element.val += found.val;
-                    hashes[index].update(element);
+                    this.hashes[index].update(element);
                }
           }
      }
 
 
-     // remove Element from hash
-     private static void deleteFromHash(Element element) {
-          hashes[calculateHash(element)].delete(element.key);
+     // remove Element from hash if element with given key exists
+     private void deleteFromHash(Element element) {
+          this.hashes[calculateHash(element)].delete(element.key);
      }
 
      // print Hash
      // don't print out empty lists
      // print out ranges of empty list indices
      // or print out values in populated lists in index order
-     public static void printHash() {
+     public void printHash() {
           int firstEmpty = -1;
           int lastEmpty = -1;
 
-          for (int i = 0; i < hashes.length; i++) {
-               if (hashes[i] == null || hashes[i].isEmpty()) {
+          for (int i = 0; i < this.hashes.length; i++) {
+               if (this.hashes[i] == null || this.hashes[i].isEmpty()) {
                     if (firstEmpty == -1) {
                          firstEmpty = i;
                     }
@@ -83,12 +80,14 @@ public class Hash {
                          lastEmpty = -1;
                     }
                     System.out.print(i + ": ");
-                    hashes[i].printList();
+                    this.hashes[i].printList();
                }
           }
      }
 
 
+     // read the input file with a BufferedReader
+     // append each line (and a newline character) to a StringBuilder
      public static String readFile(String filePath) throws IOException {
           BufferedReader reader = new BufferedReader(new FileReader(filePath));
           String currLine;
@@ -100,35 +99,23 @@ public class Hash {
           return total.toString();
      }
 
-     public static void main(String[] args) throws IOException {
 
-          String filePath = "C:\\Users\\andre\\IdeaProjects\\coding-challenges\\src\\main\\java\\personal\\y22\\m09\\wholeBo.txt";
-          String contents = readFile(filePath);
+     // we don't care about the frequencies of these very common/very short words
+     public static void buildIgnoreList() throws IOException {
+          String ignorePath = "C:\\Users\\andre\\IdeaProjects\\coding-challenges\\src\\main\\java\\personal\\y22\\m09\\ignorelist.txt";
+          BufferedReader reader = new BufferedReader(new FileReader(ignorePath));
 
-
-          contents = contents.toLowerCase();
-          String[] words = contents.split("\\s+");
-
-          Element newElement;
-
-          for (String word : words) {
-               newElement = new Element(word, 1);
-               put(newElement);
+          String word;
+          while ((word = reader.readLine()) != null) {
+               ignoreList.add(word);
           }
-          //  printHash();
 
-          String[][] wordsAndFreqs = new String[14746][2];
-          int posCounter = 0;
-
-          generateOutputTable(wordsAndFreqs, posCounter);
-          generateOutputFile(wordsAndFreqs);
-
+          reader.close();
      }
 
-     private static void generateOutputFile(String[][] wordsAndFreqs) throws IOException {
-          System.out.println(deepToString(wordsAndFreqs));
-
-          String outputFilePath = "C:\\Users\\andre\\IdeaProjects\\coding-challenges\\src\\main\\java\\personal\\y22\\m09\\wholebible.txt";
+     // write the output table into a file
+     private void generateOutputFile(String[][] wordsAndFreqs) throws IOException {
+          String outputFilePath = "C:\\Users\\andre\\IdeaProjects\\coding-challenges\\src\\main\\java\\personal\\y22\\m09\\BibleFrequencyAnalysis.txt";
           BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
 
           String header = "word\tfrequency";
@@ -140,9 +127,12 @@ public class Hash {
           writer.close();
      }
 
-     private static void generateOutputTable(String[][] wordsAndFreqs, int posCounter) {
+     // takes the Hash of Linked Lists and converts it into an array
+     // the first column contains the word
+     // and the second contains the frequency
+     public void generateOutputTable(String[][] wordsAndFreqs, int posCounter) {
           Element current;
-          for (LinkedList list : hashes) {
+          for (LinkedList list : this.hashes) {
                if (list != null && list.head != null) {
                     current = list.head;
                     while (current != null) {
@@ -155,8 +145,49 @@ public class Hash {
           }
 
           Comparator<String[]> recordComparator = comparingInt(o -> parseInt(o[1]));
-
-          sort(wordsAndFreqs, recordComparator);
+          Arrays.sort(wordsAndFreqs, recordComparator);
           reverse(asList(wordsAndFreqs));
+
+          System.out.println(Arrays.deepToString(wordsAndFreqs));
      }
+
+
+     public static void main(String[] args) throws IOException {
+          buildIgnoreList();
+          Set<String> uniqueWords = new HashSet<>();
+
+          Hash bibleHash = new Hash();
+
+          String filePath = "C:\\Users\\andre\\IdeaProjects\\coding-challenges\\src\\main\\java\\personal\\y22\\m09\\wholeBible.txt";
+          String contents = readFile(filePath);
+
+          contents = contents.toLowerCase();
+          String[] words = contents.split("\\s+");
+
+          Element newElement;
+
+          for (String word : words) {
+               if (!ignoreList.contains(word)) {
+                    newElement = new Element(word, 1);
+                    bibleHash.put(newElement);
+                    uniqueWords.add(word);
+               }
+          }
+
+          String[][] wordsAndFreqs = new String[uniqueWords.size()][2];
+          int posCounter = 0;
+
+          bibleHash.generateOutputTable(wordsAndFreqs, posCounter);
+          bibleHash.generateOutputFile(wordsAndFreqs);
+
+
+          // todo: ignoreList from file
+          // fixme: length of array
+          // fixme: fewer static methods
+          //~~~~~
+          // todo: create getKeys()
+          // fixme: generateOutputTable() using getKeys()
+          // todo: process one line at a time
+     }
+
 }

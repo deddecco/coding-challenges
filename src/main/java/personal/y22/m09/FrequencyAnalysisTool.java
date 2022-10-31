@@ -11,7 +11,7 @@ public class FrequencyAnalysisTool {
      public static HashSet<String> ignoreThese = new HashSet<>();
 
      private static HashMap<String, Integer> frequenciesFile() throws IOException {
-          String[][] lineSplits = new String[38085][];
+          String[][] lineSplits = new String[37880][];
 
           int i = 0;
           String filename = "C:\\Users\\andre\\IdeaProjects\\coding-challenges\\src\\main\\java\\personal\\y22\\m09\\wholeBible.txt";
