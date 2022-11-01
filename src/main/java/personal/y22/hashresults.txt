@@ -1,0 +1,68 @@
+0 to 2: empty
+he	56		he	64		made	104		he	108		he	177		he	193		made	328		he	354		
+and	6		and	13		and	15		and	24		and	35		and	42		and	45		and	54		and	63		and	69		and	73		and	77		and	95		and	102		and	107		and	124		and	128		and	134		and	138		and	159		and	165		and	169		and	176		and	185		and	192		and	206		and	224		and	228		and	243		and	259		and	266		and	270		and	288		and	295		and	304		and	308		and	318		and	322		and	326		and	340		and	353		and	369		and	380		and	386		and	393		and	397		
+5 to 6: empty
+called	65		called	130		called	171		called	178		
+8 to 8: empty
+are	150		
+all	221		all	366		as	375		as	377		
+god	3		of	21		of	28		god	29		god	36		god	46		god	81		of	92		god	103		god	129		god	144		land	163		god	170		land	174		of	181		god	186		land	197		land	230		of	253		god	260		god	277		of	286		of	301		of	305		of	316		god	327		of	360		god	387		
+place	158		
+in	0		said	37		said	83		in	89		said	145		said	194		seed	205		seed	216		seed	238		said	278		in	283		become	298		in	313		in	357		
+fruit-bearing	207		
+day	68		day	80		day	142		day	275		day	292		day	339		day	374		day	401		
+16 to 17: empty
+the	1		the	9		the	19		the	22		the	26		the	33		the	48		the	58		the	61		the	66		the	70		the	90		the	93		the	110		the	115		the	122		the	131		the	140		the	147		the	161		the	172		the	179		the	182		the	196		kind	214		is	217		the	222		the	229		kind	242		the	271		the	273		the	284		the	302		the	306		the	314		the	320		the	338		the	347		the	351		the	358		the	367		the	373		the	378		the	399		
+it	51		it	74		one	79		it	97		it	126		it	135		one	157		it	167		it	189		it	226		it	263		it	267		it	324		it	390		it	394		
+above	121		
+created	4		good	53		good	191		good	265		good	392		
+let	38		divided	57		let	84		let	96		divided	109		let	146		let	160		let	195		let	279		let	289		let	296		let	310		
+divide	98		divide	291		give	363		divide	382		
+so	25		so	55		so	125		so	166		seas	184		green	200		so	225		green	233		so	323		along	349		
+heaven	5		heaven	133		heaven	152		both	202		to	212		both	235		to	240		to	256		heaven	287		both	300		heaven	317		to	335		to	344		heaven	361		to	362		to	370		to	381		
+them	290		them	297		them	311		great	330		them	356		
+earth	7		earth	10		also	82		appear	164		earth	175		earth	223		then	276		earth	321		earth	368		
+but	8		was	11		was	30		saw	47		was	52		gathered	154		saw	187		was	190		saw	261		was	264		saw	388		was	391		
+that	50		that	112		that	119		that	149		that	188		according	211		according	239		according	255		that	262		days	307		set	355		that	389		
+second	141		shine	312		
+were	17		there	39		light	41		light	43		light	49		light	59		light	67		there	85		were	113		were	120		having	249		there	280		light	334		light	343		light	364		light	383		
+from	60		from	100		from	117		dry	162		dry	173		from	293		well	376		from	384		
+night	72		its	250		its	257		night	294		night	348		night	379		
+way	252		third	274		
+their	213		their	241		
+beginning	2		rule	336		rule	345		rule	371		
+under	114		under	151		own	251		
+into	156		
+greater	333		
+over	18		over	32		midst	91		over	220		with	247		over	337		over	346		with	350		over	365		over	372		
+abyss	23		evening	76		evening	137		itself	219		species	258		evening	269		evening	396		
+those	118		forth	199		those	203		trees	208		forth	232		those	236		trees	244		
+signs	299		years	309		two	329		
+gathering	180		
+whose	215		lights	282		lights	331		
+46 to 47: empty
+lesser	342		
+fruit	210		fruit	246		
+50 to 50: empty
+darkness	385		
+plants	201		plants	234		stars	352		
+spring	198		within	218		
+empty	12		firmament	88		firmament	106		firmament	116		firmament	123		firmament	132		firmament	285		firmament	315		firmament	359		
+morning	78		morning	139		morning	272		morning	398		
+brought	31		waters	34		waters	94		waters	99		waters	101		waters	111		waters	148		waters	183		brought	231		
+sowing	254		seasons	303		
+together	155		fourth	400		
+59 to 60: empty
+unoccupied	14		spirit	27		
+producing	204		producing	209		producing	237		producing	245		
+63 to 64: empty
+darknesses	16		darknesses	62		darknesses	71		
+illuminate	319		
+67 to 70: empty
+truly	143		
+72 to 95: empty
+face	20		
+a	87		a	105		a	332		a	341		
+be	40		be	86		be	153		each	248		be	281		
+99 to 99: empty
+became	44		became	75		became	127		became	136		became	168		became	227		became	268		became	325		became	395		
